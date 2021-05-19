@@ -1,0 +1,39 @@
+* rope the selfish minimalistic container runner that just work
+I always wanted a small tool for starting and stoping container(s) base on a config file [[file:.rope.yaml][.rope.yaml]]
+
+* usagee
+** example config file
+config file contains section /services/ that is build from key value pairs - container image : replicas
+
+#+begin_src yaml
+services:
+  nginx: 3
+  ubuntu: 1
+#+end_src
+
+** build and run
+#+begin_src shell
+go build cmd/rope/rope.go
+
+# docker engine needs to be installed and running
+./rope.go -vvv -watch
+#+end_src
+
+[[file:example.gif][example run]]
+
+* how this work
+each time /rope/ starts a container we add a /label/ to it with the MD5 (maybe worth changing this) of the current working dir
+
+** limitations
+- no support for exposing ports and external volumes - this tool was build in mind of headless workers
+- container discover needs to be done via external tools like /consul/ or /etc.d/ (an example with e2e test would be useful)
+- one instance of /rope/ can monitor and mng only containers descriibe in the local /.rope.yaml/ file
+- docker is required (we should add more runtimes support)
+
+* ToDo [0/6] [0%]
+- [ ] add a file watch to remove the need of restarting the watch process
+- [ ] add config example generator
+- [ ] add more e2e tests
+- [ ] support other runtimes
+- [ ] add CI/CD for release
+- [ ] add code quality tooling
